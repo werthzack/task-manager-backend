@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "setupdb": "psql -f src/db/setupdbs.sql",
+    "seed": "node src/db/run-seed.js",
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
     "pretest": "createdb task_manager_test || true",
