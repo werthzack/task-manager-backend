@@ -129,3 +129,41 @@ describe("GET /api/tasks", () => {
     });
   });
 });
+
+describe("GET /api/tasks/:id", () => {
+  it("should return a task by id", () => {
+    return pool.query("SELECT * FROM tasks LIMIT 1").then((result) => {
+      const task = result.rows[0];
+      return request(app)
+        .get(`/api/tasks/${task.id}`)
+        .expect(200)
+        .then((response) => {
+          expect(response.body).toMatchObject({
+            id: task.id,
+            title: task.title,
+            description: task.description,
+            status: task.status,
+            due_date: expect.any(String),
+          });
+        });
+    });
+  });
+
+  it("should return 404 if task does not exist", () => {
+    return request(app)
+      .get("/api/tasks/99999")
+      .expect(404)
+      .then((response) => {
+        expect(response.body).toMatchObject({ error: expect.any(String) });
+      });
+  });
+
+  it("should return 400 if id is not a number", () => {
+    return request(app)
+      .get("/api/tasks/notanid")
+      .expect(400)
+      .then((response) => {
+        expect(response.body).toMatchObject({ error: expect.any(String) });
+      });
+  });
+});

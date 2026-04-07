@@ -25,3 +25,13 @@ exports.selectAllTasks = () => {
     return result.rows;
   });
 };
+
+exports.selectTaskById = (taskId) => {
+  const query = `
+    SELECT * FROM tasks WHERE id = $1
+  `;
+
+  return db.query(query, [taskId]).then((result) => {
+    return result.rows[0];
+  });
+};
