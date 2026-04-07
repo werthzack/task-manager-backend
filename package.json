@@ -7,7 +7,7 @@
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
     "pretest": "createdb task_manager_test || true",
-    "test": "jest --runInBand --forceExit",
+    "test": "jest --runInBand --forceExit --detectOpenHandles",
     "posttest": "dropdb task_manager_test || true",
     "prepare": "husky"
   },
