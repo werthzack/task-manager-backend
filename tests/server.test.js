@@ -94,3 +94,38 @@ describe("POST /api/tasks", () => {
       });
   });
 });
+
+describe("GET /api/tasks", () => {
+  it("should return all tasks", () => {
+    return request(app)
+      .get("/api/tasks")
+      .expect(200)
+      .then((response) => {
+        expect(response.body).toHaveLength(testTasks.length);
+        response.body.forEach((task, index) => {
+          expect(task).toMatchObject({
+            id: expect.any(Number),
+            title: testTasks[index].title,
+            description: testTasks[index].description,
+            status: testTasks[index].status,
+            due_date: expect.any(String),
+          });
+          expect(new Date(task.due_date).getTime()).toBe(
+            new Date(testTasks[index].due_date).getTime(),
+          );
+        });
+      });
+  });
+
+  it("should return an empty array when no tasks exist", () => {
+    return pool.query("DELETE FROM tasks").then(() => {
+      return request(app)
+        .get("/api/tasks")
+        .expect(200)
+        .then((response) => {
+          expect(Array.isArray(response.body)).toBe(true);
+          expect(response.body).toHaveLength(0);
+        });
+    });
+  });
+});

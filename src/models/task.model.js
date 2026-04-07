@@ -15,3 +15,13 @@ exports.postTask = (taskData) => {
     return result.rows[0];
   });
 };
+
+exports.selectAllTasks = () => {
+  const query = `
+    SELECT * FROM tasks
+  `;
+
+  return db.query(query).then((result) => {
+    return result.rows;
+  });
+};

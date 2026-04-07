@@ -1,4 +1,4 @@
-const { postTask } = require("../models/task.model");
+const { postTask, selectAllTasks } = require("../models/task.model");
 
 exports.createTask = (req, res) => {
   console.log("Received request to create task with data:", req.body);
@@ -11,5 +11,16 @@ exports.createTask = (req, res) => {
     .catch((err) => {
       console.error(err);
       res.status(500).json({ error: "Failed to create task" });
+    });
+};
+
+exports.getAllTasks = (req, res) => {
+  selectAllTasks()
+    .then((tasks) => {
+      res.json(tasks);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).json({ error: "Failed to retrieve tasks" });
     });
 };

@@ -10,7 +10,7 @@ const seed = (tasksData) => {
             title VARCHAR(255) NOT NULL,
             description TEXT,
             status VARCHAR(50) NOT NULL DEFAULT 'pending',
-            due_date TIMESTAMP NOT NULL,
+            due_date TIMESTAMPTZ NOT NULL,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )`);
     })
