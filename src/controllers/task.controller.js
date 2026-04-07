@@ -60,7 +60,7 @@ exports.updateTaskStatus = (req, res) => {
 
   if (
     !status ||
-    ["pending", "in-progress", "completed"].includes(status) === -1
+    ["pending", "in-progress", "completed"].indexOf(status) === -1
   ) {
     return res.status(400).json({ error: "Status is required" });
   }
