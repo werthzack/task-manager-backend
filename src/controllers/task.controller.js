@@ -2,6 +2,7 @@ const {
   postTask,
   selectAllTasks,
   selectTaskById,
+  patchTaskStatus,
 } = require("../models/task.model");
 
 exports.createTask = (req, res) => {
@@ -46,5 +47,33 @@ exports.getTaskById = (req, res) => {
     .catch((err) => {
       console.error(err);
       res.status(500).json({ error: "Failed to retrieve task" });
+    });
+};
+
+exports.updateTaskStatus = (req, res) => {
+  const taskId = req.params.id;
+  const { status } = req.body;
+
+  if (isNaN(taskId)) {
+    return res.status(400).json({ error: "Invalid task ID" });
+  }
+
+  if (
+    !status ||
+    ["pending", "in-progress", "completed"].indexOf(status) === -1
+  ) {
+    return res.status(400).json({ error: "Status is required" });
+  }
+
+  patchTaskStatus(taskId, status)
+    .then((updatedTask) => {
+      if (!updatedTask) {
+        return res.status(404).json({ error: "Task not found" });
+      }
+      res.json(updatedTask);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).json({ error: "Failed to update task status" });
     });
 };

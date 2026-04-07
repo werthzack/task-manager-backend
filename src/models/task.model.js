@@ -35,3 +35,16 @@ exports.selectTaskById = (taskId) => {
     return result.rows[0];
   });
 };
+
+exports.patchTaskStatus = (taskId, newStatus) => {
+  const query = `
+    UPDATE tasks
+    SET status = $1
+    WHERE id = $2
+    RETURNING *
+  `;
+
+  return db.query(query, [newStatus, taskId]).then((result) => {
+    return result.rows[0];
+  });
+};

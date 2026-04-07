@@ -2,7 +2,7 @@ const testTasks = [
   {
     title: "Review case documents",
     description: "Review all documents for case #1234",
-    status: "not-started",
+    status: "pending",
     due_date: "2026-04-10T09:00:00Z",
   },
   {

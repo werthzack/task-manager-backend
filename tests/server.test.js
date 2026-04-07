@@ -28,7 +28,7 @@ describe("POST /api/tasks", () => {
     const newTask = {
       title: "New Task",
       description: "This is a new task",
-      status: "not-started",
+      status: "pending",
       due_date: "2024-12-31T23:59:59Z",
     };
 
@@ -55,7 +55,7 @@ describe("POST /api/tasks", () => {
       .post("/api/tasks")
       .send({
         description: "No title",
-        status: "not-started",
+        status: "pending",
         due_date: "2024-12-31T23:59:59Z",
       })
       .expect(400)
@@ -67,7 +67,7 @@ describe("POST /api/tasks", () => {
   it("should return 400 if due_date is missing", async () => {
     return request(app)
       .post("/api/tasks")
-      .send({ title: "No date", status: "not-started" })
+      .send({ title: "No date", status: "pending" })
       .expect(400)
       .then((response) => {
         expect(response.body).toMatchObject({ error: expect.any(String) });
@@ -79,7 +79,7 @@ describe("POST /api/tasks", () => {
       .post("/api/tasks")
       .send({
         title: "No description",
-        status: "not-started",
+        status: "pending",
         due_date: "2024-12-31T23:59:59Z",
       })
       .expect(201)
@@ -88,7 +88,7 @@ describe("POST /api/tasks", () => {
           id: expect.any(Number),
           title: "No description",
           description: null,
-          status: "not-started",
+          status: "pending",
           due_date: expect.any(String),
         });
       });
@@ -162,6 +162,47 @@ describe("GET /api/tasks/:id", () => {
     return request(app)
       .get("/api/tasks/notanid")
       .expect(400)
+      .then((response) => {
+        expect(response.body).toMatchObject({ error: expect.any(String) });
+      });
+  });
+});
+
+describe("PATCH /api/tasks/:id/status", () => {
+  it("should update the status of a task", () => {
+    return pool.query("SELECT * FROM tasks LIMIT 1").then((result) => {
+      const task = result.rows[0];
+      return request(app)
+        .patch(`/api/tasks/${task.id}/status`)
+        .send({ status: "in-progress" })
+        .expect(200)
+        .then((response) => {
+          expect(response.body).toMatchObject({
+            id: task.id,
+            status: "in-progress",
+          });
+        });
+    });
+  });
+
+  it("should return 400 if status is invalid", () => {
+    return pool.query("SELECT * FROM tasks LIMIT 1").then((result) => {
+      const task = result.rows[0];
+      return request(app)
+        .patch(`/api/tasks/${task.id}/status`)
+        .send({ status: "invalid-status" })
+        .expect(400)
+        .then((response) => {
+          expect(response.body).toMatchObject({ error: expect.any(String) });
+        });
+    });
+  });
+
+  it("should return 404 if task does not exist", () => {
+    return request(app)
+      .patch("/api/tasks/99999/status")
+      .send({ status: "in-progress" })
+      .expect(404)
       .then((response) => {
         expect(response.body).toMatchObject({ error: expect.any(String) });
       });
