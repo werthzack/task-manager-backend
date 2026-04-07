@@ -6,7 +6,9 @@
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
+    "pretest": "createdb task_manager_test || true",
     "test": "jest --runInBand --forceExit",
+    "posttest": "dropdb task_manager_test || true",
     "prepare": "husky"
   },
   "keywords": [],
@@ -17,7 +19,8 @@
     "cors": "^2.8.6",
     "dotenv": "^17.4.1",
     "express": "^5.2.1",
-    "pg": "^8.20.0"
+    "pg": "^8.20.0",
+    "pg-format": "^1.0.4"
   },
   "devDependencies": {
     "husky": "^9.1.7",
