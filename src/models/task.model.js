@@ -48,3 +48,15 @@ exports.patchTaskStatus = (taskId, newStatus) => {
     return result.rows[0];
   });
 };
+
+exports.deleteTask = (taskId) => {
+  const query = `
+    DELETE FROM tasks
+    WHERE id = $1
+    RETURNING *
+  `;
+
+  return db.query(query, [taskId]).then((result) => {
+    return result.rows[0];
+  });
+};

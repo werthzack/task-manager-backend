@@ -1,7 +1,6 @@
 const pool = require("./connection");
 
 const seed = (tasksData) => {
-  console.log("Seeding database...");
   return pool
     .query("DROP TABLE IF EXISTS tasks")
     .then(() => {

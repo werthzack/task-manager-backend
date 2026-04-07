@@ -208,3 +208,30 @@ describe("PATCH /api/tasks/:id/status", () => {
       });
   });
 });
+
+describe("DELETE /api/tasks/:id", () => {
+  it("should delete a task", () => {
+    return pool.query("SELECT * FROM tasks LIMIT 1").then((result) => {
+      const task = result.rows[0];
+      return request(app).delete(`/api/tasks/${task.id}`).expect(204);
+    });
+  });
+
+  it("should return 404 if task does not exist", () => {
+    return request(app)
+      .delete("/api/tasks/99999")
+      .expect(404)
+      .then((response) => {
+        expect(response.body).toMatchObject({ error: expect.any(String) });
+      });
+  });
+
+  it("should return 400 if id is not a number", () => {
+    return request(app)
+      .delete("/api/tasks/notanid")
+      .expect(400)
+      .then((response) => {
+        expect(response.body).toMatchObject({ error: expect.any(String) });
+      });
+  });
+});
